@@ -1,4 +1,4 @@
-
+import os
 
 inp = input("$")
 ex = 0
