@@ -5,6 +5,8 @@ while ex != 1:
     inp = input("$")
     if(inp == "exit"):
         ex = 1
+    else:
+        p4()
 print("Goodbye!")
 
 def p4():
