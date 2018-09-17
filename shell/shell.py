@@ -1,14 +1,3 @@
-inp = input("$")
-ex = 0
-
-while ex != 1:
-    inp = input("$")
-    if(inp == "exit"):
-        ex = 1
-    else:
-        p4()
-print("Goodbye!")
-
 def p4():
     pid = os.getpid()               # get and remember pid
 
@@ -47,3 +36,14 @@ def p4():
         childPidCode = os.wait()
         os.write(1, ("Parent: Child %d terminated with exit code %d\n" % 
                      childPidCode).encode())
+
+inp = input("$")
+ex = 0
+
+while ex != 1:
+    inp = input("$")
+    if(inp == "exit"):
+        ex = 1
+    else:
+        p4()
+print("Goodbye!")
