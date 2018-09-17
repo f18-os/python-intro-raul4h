@@ -1,10 +1,14 @@
-def p4():
+import os,sys, time, re
+
+def p4(inp):
     pid = os.getpid()               # get and remember pid
 
     os.write(1, ("About to fork (pid=%d)\n" % pid).encode())
 
     rc = os.fork()
 
+    print(os.environ['PATH'])
+    
     if rc < 0:
         os.write(2, ("fork failed, returning %d\n" % rc).encode())
         sys.exit(1)
@@ -12,22 +16,21 @@ def p4():
     elif rc == 0:                   # child
         os.write(1, ("Child: My pid==%d.  Parent's pid=%d\n" % 
                      (os.getpid(), pid)).encode())
-        args = ["wc", "p3-exec.py"]
 
         os.close(1)                 # redirect child's stdout
-        sys.stdout = open("p4-output.txt", "w")
-        fd = sys.stdout.fileno() # os.open("p4-output.txt", os.O_CREAT)
+        sys.stdout = open("shell-output.txt", "w")
+        fd = sys.stdout.fileno() # os.open("shell.txt", os.O_CREAT)
         os.set_inheritable(fd, True)
         os.write(2, ("Child: opened fd=%d for writing\n" % fd).encode())
 
         for dir in re.split(":", os.environ['PATH']): # try each directory in path
-            program = "%s/%s" % (dir, args[0])
+            program = "%s/%s" % (dir, inp)
             try:
-                os.execve(program, args, os.environ) # try to exec program
+                os.execve(program, inp, os.environ) # try to exec program
             except FileNotFoundError:             # ...expected
                 pass                              # ...fail quietly 
 
-        os.write(2, ("Child:    Error: Could not exec %s\n" % args[0]).encode())
+        os.write(2, ("Child:    Error: Could not exec %s\n" % inp).encode())
         sys.exit(1)                 # terminate with error
 
     else:                           # parent (forked ok)
@@ -45,5 +48,5 @@ while ex != 1:
     if(inp == "exit"):
         ex = 1
     else:
-        p4()
+        p4(inp)
 print("Goodbye!")
