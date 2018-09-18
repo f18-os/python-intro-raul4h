@@ -24,6 +24,15 @@ def p4(inp):
             os.set_inheritable(fd, True)
             os.write(2, ("Child: opened fd=%d for writing\n" % fd).encode())
 
+        if("<" in inp):
+            os.close(1)                 # redirect child's stdout
+            sys.stdin = open(inp[len(inp) - 1], "r")
+            del inp[len(inp) - 1]
+            del inp[len(inp) - 1]
+            fd = sys.stdin.fileno() # os.open("shell.txt", os.O_CREAT)
+            os.set_inheritable(fd, True)
+            os.write(2, ("Child: opened fd=%d for writing\n" % fd).encode())
+
         for dir in re.split(":", os.environ['PATH']): # try each directory in path
             program = "%s/%s" % (dir, inp[0])
             try:
@@ -41,14 +50,17 @@ def p4(inp):
         os.write(1, ("Parent: Child %d terminated with exit code %d\n" % 
                      childPidCode).encode())
 
-inp = input("$")
+inp = input("$ ")
 ex = 0
 
 while ex != 1:
     inp = inp.split(" ")
     if(inp == ["exit"]):
         ex = 1
+    elif(inp[0] == "cd"):
+        os.chdir(inp[1])
+        inp = input("$ ")
     else:
         p4(inp)
-        inp =input("$")
+        inp =input("$ ")
 print("Goodbye!")
