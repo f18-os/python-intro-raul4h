@@ -25,13 +25,13 @@ def p4(inp):
             os.write(2, ("Child: opened fd=%d for writing\n" % fd).encode())
 
         if("<" in inp):
-            os.close(1)                 # redirect child's stdout
+            os.close(0)                 # redirect child's stdout
             sys.stdin = open(inp[len(inp) - 1], "r")
             del inp[len(inp) - 1]
             del inp[len(inp) - 1]
             fd = sys.stdin.fileno() # os.open("shell.txt", os.O_CREAT)
             os.set_inheritable(fd, True)
-            os.write(2, ("Child: opened fd=%d for writing\n" % fd).encode())
+            os.write(2, ("Child: opened fd=%d for reading\n" % fd).encode())
 
         for dir in re.split(":", os.environ['PATH']): # try each directory in path
             program = "%s/%s" % (dir, inp[0])
