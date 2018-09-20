@@ -69,8 +69,6 @@ def piping(inp):
         sys.exit(1)
 
     elif rc == 0:                   #  child - will write to pipe
-        os.fork
-        x = os.getpid
         #print("Child: My pid==%d.  Parent's pid=%d" % (os.getpid(), pid), file=sys.stderr)
 
         i = inp.index("|")
