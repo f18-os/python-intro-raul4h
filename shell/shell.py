@@ -116,9 +116,13 @@ while ex != 1:
         os.chdir(inp[1])
         inp = input("$ ")
     elif("|" in inp):
-        piping(inp)
+        rc = os.fork()
+        if rc == 0:
+            piping(inp)
+        else:
+            os.wait()
         inp = input("$ ")
     else:
         p4(inp)
-        inp =input("$ ")
+        inp = input("$ ")
 print("Goodbye!")
