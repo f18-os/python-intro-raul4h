@@ -33,7 +33,13 @@ def p4(inp):
             os.set_inheritable(fd, True)
             #os.write(2, ("Child: opened fd=%d for reading\n" % fd).encode())
 
-        for dir in re.split(":", os.environ['PATH']): # try each directory in path
+        if(os.s.path.isfile(inp[0])):
+            try:
+                os.execve(inp[0],inp,os.environ) # try to exec program
+            except FileNotFoundError:             # ...expected
+                pass                              # ...fail quietly 
+        else:
+            for dir in re.split(":", os.environ['PATH']): # try each directory in path
             program = "%s/%s" % (dir, inp[0])
             try:
                 os.execve(program,inp,os.environ) # try to exec program
@@ -80,12 +86,18 @@ def piping(inp):
         for fd in (pr, pw):
             os.close(fd)
         print()
-        for dir in re.split(":", os.environ['PATH']): # try each directory in path
-            program = "%s/%s" % (dir, args[0])
+        fif(os.s.path.isfile(inp[0])):
             try:
-                os.execve(program,args,os.environ) # try to exec program
+                os.execve(inp[0],inp,os.environ) # try to exec program
             except FileNotFoundError:             # ...expected
-                pass                              # ...fail quietly
+                pass                              # ...fail quietly 
+        else:
+            for dir in re.split(":", os.environ['PATH']): # try each directory in path
+            program = "%s/%s" % (dir, inp[0])
+            try:
+                os.execve(program,inp,os.environ) # try to exec program
+            except FileNotFoundError:             # ...expected
+                pass                              # ...fail quietly 
         
 
     else:                           # parent (forked ok)
@@ -98,12 +110,18 @@ def piping(inp):
         for fd in (pw, pr):
             os.close(fd)
         for line in fileinput.input():
-           for dir in re.split(":", os.environ['PATH']): # try each directory in path
-            program = "%s/%s" % (dir, args[0])
+           if(os.s.path.isfile(inp[0])):
             try:
-                os.execve(program,args,os.environ) # try to exec program
+                os.execve(inp[0],inp,os.environ) # try to exec program
             except FileNotFoundError:             # ...expected
-                pass                              # ...fail quietly
+                pass                              # ...fail quietly 
+        else:
+            for dir in re.split(":", os.environ['PATH']): # try each directory in path
+            program = "%s/%s" % (dir, inp[0])
+            try:
+                os.execve(program,inp,os.environ) # try to exec program
+            except FileNotFoundError:             # ...expected
+                pass                              # ...fail quietly 
 
 inp = input("$ ")
 ex = 0
